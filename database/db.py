@@ -1,4 +1,4 @@
-from core.logging.logger import Logger
+from core.logging import Logger
 from functools import wraps
 import sqlite3
 
