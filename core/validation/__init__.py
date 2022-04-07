@@ -2,5 +2,5 @@ from .responses import SuccessResponse, SuccessDataResponse, ErrorDataResponse, 
 from .validations import run_checks
 from . import messages
 
-__all__ = [messages, SuccessResponse, SuccessDataResponse,
-           ErrorResponse, ErrorDataResponse, run_checks]
+__all__ = ['messages', 'SuccessResponse', 'SuccessDataResponse',
+           'ErrorResponse', 'ErrorDataResponse', 'run_checks']
