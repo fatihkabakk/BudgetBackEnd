@@ -5,20 +5,20 @@ from passlib.hash import sha512_crypt
 from core.validation import *
 from compress import Compress
 from functools import wraps
+from os import urandom
 from log import Log
 import jwt
-import os
 
 
 class App(Flask):
     def process_response(self, response):
-        response.headers['server'] = 'KlinzBlog'
+        response.headers['server'] = 'Budgee'
         response = super(App, self).process_response(response)
         return response
 
 
 app = App(__name__)
-app.secret_key = os.urandom(16)
+app.secret_key = urandom(16)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -73,9 +73,14 @@ def page_not_found(e):
     return ErrorResponse('Not found.'), 404
 
 
+@app.errorhandler(400)
+def bad_request(e):
+    return ErrorResponse('Bad request'), 400
+
+
 @app.route('/')
 def index():
-    return {'message': 'Hello, World!'}
+    return SuccessResponse('Index page.')
 
 
 @app.route('/post', methods=['POST'])
@@ -109,7 +114,7 @@ def register():
     form = RegisterForm(json_data=request.json, **request.form)
 
     if not form.validate():
-        return ErrorResponse('Invalid form body'), 400
+        return ErrorResponse('Invalid request body'), 400
 
     username = form.username
     password = sha512_crypt.hash(form.password)
