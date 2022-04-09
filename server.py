@@ -7,6 +7,7 @@ from compress import Compress
 from functools import wraps
 from core.cors import CORS
 from os import urandom
+from time import time
 from log import Log
 import jwt
 
@@ -127,13 +128,15 @@ def login():
 
     username = form.username
     form_pass = form.password
+    remember_me = form.rememberMe
 
     user = User.query.filter_by(username=username).first()
     if user:
         if sha512_crypt.verify(form_pass, user.password):
-            token = jwt.encode({
-                'id': user.id, 'username': user.username
-            }, app.config['SECRET_KEY'])
+            add_exp = (24 * 3600) if not remember_me else (24 * 3600 * 7)
+            token = jwt.encode({'exp': time() + add_exp,
+                                'id': user.id, 'username': user.username
+                                }, app.config['SECRET_KEY'])
             return SuccessDataResponse({'token': token}, 'Login successful.')
         return ErrorResponse('Debug[pass] Invalid credentials.')
     return ErrorResponse('Debug[user] Invalid credentials.')
