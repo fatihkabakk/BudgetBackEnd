@@ -100,17 +100,6 @@ def form():
     return {'Username': form.username, 'Password': form.password}
 
 
-def login_required(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            return ErrorResponse('Unauthorized'), 401
-
-    return wrapper
-
-
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm(json_data=request.json, **request.form)
