@@ -1,6 +1,3 @@
-import json
-
-
 class Form:
     def __init__(self, json_data=None, **kwargs) -> None:
         self.data = json_data or kwargs
@@ -17,9 +14,9 @@ class Form:
             setattr(self, i, self.data.get(i))
 
 
-class LoginForm(Form):
+class RegisterForm(Form):
     fields = ('username', 'password')
 
 
-class RegisterForm(LoginForm):
-    pass
+class LoginForm(RegisterForm):
+    fields = (*RegisterForm.fields, 'rememberMe')
