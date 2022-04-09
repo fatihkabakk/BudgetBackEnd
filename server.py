@@ -5,6 +5,7 @@ from passlib.hash import sha512_crypt
 from core.validation import *
 from compress import Compress
 from functools import wraps
+from core.cors import CORS
 from os import urandom
 from log import Log
 import jwt
@@ -24,6 +25,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
 Compress(app)
+CORS(app)
 Log(app)
 
 
