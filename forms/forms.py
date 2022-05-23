@@ -1,4 +1,5 @@
 from json import loads
+from core.validation import ErrorResponse, SuccessResponse, run_checks
 
 
 class Form:
@@ -14,7 +15,9 @@ class Form:
         return True
 
     def set_attributes(self):
-        """ Uses an exceptional case for boolean values. """
+        """ Embeds attributes to the object. 
+        ! Note: Uses an exceptional case for boolean values.
+        """
         for i in self.fields:
             data = self.data.get(i)
             setattr(self, i, loads(data)) if data in (
@@ -24,6 +27,24 @@ class Form:
 class RegisterForm(Form):
     fields = ('username', 'password')
 
+    def validate(self):
+        result = super().validate()
+        validation = run_checks(check_username(self.username), check_password(self.password))
+        if not result or validation: return False
+        return True
+
 
 class LoginForm(RegisterForm):
     fields = (*RegisterForm.fields, 'rememberMe')
+
+
+def check_username(username):
+    if len(username) >= 2:
+        return SuccessResponse()
+    return ErrorResponse('Username must be at least 2 characters.')
+
+
+def check_password(password):
+    if len(password) >= 6:
+        return SuccessResponse()
+    return ErrorResponse('Password must be at least 6 characters.')
